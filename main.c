@@ -14,7 +14,7 @@
 #define RUNNING 1
 #define BLOCK -1
 //时间片大小
-#define TIME_SLICE 1
+#define TIME_SLICE 2
 //定义一个pcb结构体
 typedef struct pcb
 {
