@@ -231,13 +231,24 @@ void execute()
 void execute2()
 {
     PCB *p = NULL;
+    int remainder = 0;
     while (ready != NULL)
     {
         ready->state = 1;
         p = ready;
         while (p != NULL)
         {
-            p->runtime += TIME_SLICE;
+            //进程所需时间对时间片取余
+            remainder = p->reqtime % TIME_SLICE;
+            if ((p->reqtime - p->runtime) == remainder)
+            {
+                p->runtime += remainder;
+            }
+            else
+            {
+                p->runtime += TIME_SLICE;
+            }
+
             Sleep(1000 * TIME_SLICE);
             if (p->runtime == p->reqtime)
             {
