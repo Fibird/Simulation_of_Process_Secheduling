@@ -31,14 +31,17 @@ static PCB *ready, *ptr;
 /*****************************************************************************/
 //根据优先级对进程进行排序
 void sort();
+//将进程加入就绪队列
+void join();
 //计算进程队列的长度
 int length();
 //将进程加入队列，并按照优先级排序
-void input();
+void input1();
+void input2();
 //获得进程的详细信息
 void get_info(PCB *p);
 //进行进程调度,采用非抢占的静态优先级调度算法
-void execute();
+void execute1();
 //采用轮转调度算法
 void execute2();
 //显示进程的详细信息
@@ -51,14 +54,40 @@ int main()
 {
     pthread_t disp_thread;
     void *dis_result;
-    //输入进程的详细信息
-    input();
-    //创建另一个进程用于监视进程调度的详细信息
-    pthread_create(&disp_thread, NULL, display, (void *)message);
-    //execute();
-    execute2();
-    //确保线程disp_thread在主进程结束前结束
-    pthread_join(disp_thread, &dis_result);
+    int a;
+    printf("----------command---------\n");
+    printf("1: static priority-driven nonpreemptive scheduling\n");
+    printf("2: round robin scheduling\n");
+    printf("Please enter your commmand: ");
+    scanf("%d", &a);
+    switch (a)
+    {
+    case 1:
+        //输入进程的详细信息
+        input1();
+        //清屏操作
+        system("CLS");
+        //创建另一个进程用于监视进程调度的详细信息
+        pthread_create(&disp_thread, NULL, display, (void *)message);
+        execute1();
+        //确保线程disp_thread在主进程结束前结束
+        pthread_join(disp_thread, &dis_result);
+        break;
+    case 2:
+        //输入进程的详细信息
+        input2();
+        //清屏操作
+        system("CLS");
+        //创建另一个进程用于监视进程调度的详细信息
+        pthread_create(&disp_thread, NULL, display, (void *)message);
+        execute2();
+        //确保线程disp_thread在主进程结束前结束
+        pthread_join(disp_thread, &dis_result);
+        break;
+    default:
+        printf("Error,please check your command!\n");
+        break;
+    }
     printf("All processes are finished.\n");
     return 0;
 }
@@ -102,7 +131,27 @@ void sort()
     }
 }
 
-void input()
+void join()
+{
+    PCB *p = NULL;
+
+    if (ready == NULL)
+    {
+        ready = ptr;
+    }
+    else
+    {
+        p = ready;
+        while (p->link != NULL)
+        {
+            p = p->link;
+        }
+        p->link = ptr;
+    }
+
+}
+
+void input1()
 {
     int i, num;
     printf("Please enter the number of the process: ");
@@ -123,6 +172,30 @@ void input()
         ptr->state = READY;
         ptr->link = NULL;
         sort();
+    }
+}
+
+void input2()
+{
+    int i, num;
+    printf("Please enter the number of the process: ");
+    scanf("%d", &num);
+
+    for (i = 0; i < num; i++)
+    {
+        printf("the ID of process:No.%d\n", i);
+        ptr = getpch(PCB);
+        printf("Please enter the name of the process: ");
+        scanf("%s", ptr->name);
+        printf("Please enter the priority of the process: ");
+        scanf("%d", &ptr->priority);
+        printf("Please enter the time of the process need: ");
+        scanf("%d", &ptr->reqtime);
+        printf("\n");
+        ptr->runtime = 0;
+        ptr->state = READY;
+        ptr->link = NULL;
+        join();
     }
 }
 
@@ -208,19 +281,30 @@ void destory(PCB *p)
     free(p);
 }
 
-void execute()
+void execute1()
 {
+    int remainder = 0;
     while (ready != NULL)
     {
         ready->state = 1;
         PCB *p = ready;
         while (1)
         {
-            p->runtime += TIME_SLICE;
+            //进程所需时间对时间片取余
+            remainder = p->reqtime % TIME_SLICE;
+            if ((p->reqtime - p->runtime) == remainder)
+            {
+                p->runtime += remainder;
+            }
+            else
+            {
+                p->runtime += TIME_SLICE;
+            }
+            //p->runtime += TIME_SLICE;
             Sleep(1000 * TIME_SLICE);
             if (p->runtime == p->reqtime)
             {
-                ready = p->link;
+                //ready = p->link;
                 destory(p);
                 break;
             }
