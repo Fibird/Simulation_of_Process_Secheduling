@@ -1,7 +1,0 @@
-# depslib dependency file v1.0
-1462167019 source:e:\codeblocks\simulation_of_process_secheduling\main.c
-	<stdio.h>
-	<stdlib.h>
-	<windows.h>
-	<pthread.h>
-
