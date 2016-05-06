@@ -216,6 +216,7 @@ void *display(void *arg)
         system("CLS");
     }
     pthread_exit(0);
+    return NULL;
 }
 
 int length()
@@ -318,7 +319,6 @@ void execute2()
     int remainder = 0;
     while (ready != NULL)
     {
-        ready->state = 1;
         p = ready;
         while (p != NULL)
         {
@@ -332,8 +332,9 @@ void execute2()
             {
                 p->runtime += TIME_SLICE;
             }
-
+            p->state = 1;
             Sleep(1000 * TIME_SLICE);
+            p->state = 0;
             if (p->runtime == p->reqtime)
             {
                 destory(p);
