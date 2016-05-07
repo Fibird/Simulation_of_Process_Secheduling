@@ -55,9 +55,10 @@ int main()
     pthread_t disp_thread;
     void *dis_result;
     int a;
-    printf("----------command---------\n");
+    printf("----------------------command---------------------\n");
     printf("1: static priority-driven nonpreemptive scheduling\n");
     printf("2: round robin scheduling\n");
+    printf("--------------------------------------------------\n");
     printf("Please enter your commmand: ");
     scanf("%d", &a);
     switch (a)
@@ -205,7 +206,7 @@ void *display(void *arg)
     while (ready != NULL)
     {
         p = ready;
-        printf("****************PROCESSES INFO****************\n");
+        printf("**********************PROCESSES INFO***********************\n");
         while (p != NULL)
         {
             get_info(p);
@@ -301,11 +302,9 @@ void execute1()
             {
                 p->runtime += TIME_SLICE;
             }
-            //p->runtime += TIME_SLICE;
             Sleep(1000 * TIME_SLICE);
             if (p->runtime == p->reqtime)
             {
-                //ready = p->link;
                 destory(p);
                 break;
             }
