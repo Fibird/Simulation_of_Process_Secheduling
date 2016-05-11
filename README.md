@@ -1,3 +1,4 @@
+#It is still debuged, and has not been good.
 #Simulation of Processes Scheduling
 This program is to simulate processes scheduling.
 #introduction
