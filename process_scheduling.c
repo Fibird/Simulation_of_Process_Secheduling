@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "process_scheduling.h"
-
+static PCB *ready, *ptr;
 //根据优先级对进程进行排序
 void sort()
 {

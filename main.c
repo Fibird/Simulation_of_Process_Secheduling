@@ -8,6 +8,7 @@
 
 int main()
 {
+    char message[] = "This is another thread.";
     pthread_t disp_thread;
     void *dis_result;
     int a;

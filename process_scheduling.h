@@ -23,8 +23,7 @@ typedef struct pcb
     int runtime;
     struct pcb* link;
 } PCB;
-char message[] = "This is another thread.";
-static PCB *ready, *ptr;
+
 
 //根据优先级对进程进行排序
 void sort();
