@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1463759630 source:e:\codeblocks\sopsm\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<pthread.h>
+
+1463759511 source:e:\codeblocks\sops_master\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<pthread.h>
+
