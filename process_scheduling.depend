@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1463059882 source:e:\codeblocks\simulation_of_process_secheduling\main.c
+1463884994 source:e:\codeblocks\simulation_of_process_secheduling\main.c
 	"process_scheduling.h"
+
+1463884994 e:\codeblocks\simulation_of_process_secheduling\process_scheduling.h
 	<stdio.h>
 	<stdlib.h>
+	<windows.h>
 	<pthread.h>
-
-1463060014 e:\codeblocks\simulation_of_process_secheduling\process_scheduling.h
 
 1463060048 source:e:\codeblocks\simulation_of_process_secheduling\process_scheduling.c
 	"process_scheduling.h"
