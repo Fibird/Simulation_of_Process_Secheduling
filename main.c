@@ -207,6 +207,7 @@ void *display(void *arg)
     {
         p = ready;
         printf("**********************PROCESSES INFO***********************\n");
+        printf("name\tstate\tpriority\trequire time\trunning time\n");
         while (p != NULL)
         {
             get_info(p);
@@ -235,7 +236,6 @@ int length()
 
 void get_info(PCB *p)
 {
-    printf("name\tstate\tpriority\trequire time\trunning time\n");
     printf("%s\t", p->name);
     switch (p->state)
     {
