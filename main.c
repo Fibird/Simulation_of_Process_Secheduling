@@ -9,18 +9,18 @@
 #include <pthread.h>
 
 #define getpch(type) (type*)malloc(sizeof(type))
-/*½ø³Ì×´Ì¬*/
+/*è¿›ç¨‹çŠ¶æ€*/
 #define READY 0
 #define RUNNING 1
 #define BLOCK -1
-//Ê±¼äÆ¬´óĞ¡
+//æ—¶é—´ç‰‡å¤§å°
 #define TIME_SLICE 2
-//¶¨ÒåÒ»¸öpcb½á¹¹Ìå
+//å®šä¹‰ä¸€ä¸ªpcbç»“æ„ä½“
 typedef struct pcb
 {
     char name[10];
-    int state;     //½ø³Ì×´Ì¬
-    int priority;   //ÓÅÏÈ¼¶
+    int state;     //è¿›ç¨‹çŠ¶æ€
+    int priority;   //ä¼˜å…ˆçº§
     int reqtime;
     int runtime;
     struct pcb* link;
@@ -29,24 +29,24 @@ char message[] = "This is another thread.";
 static PCB *ready, *ptr;
 
 /*****************************************************************************/
-//¸ù¾İÓÅÏÈ¼¶¶Ô½ø³Ì½øĞĞÅÅĞò
+//æ ¹æ®ä¼˜å…ˆçº§å¯¹è¿›ç¨‹è¿›è¡Œæ’åº
 void sort();
-//½«½ø³Ì¼ÓÈë¾ÍĞ÷¶ÓÁĞ
+//å°†è¿›ç¨‹åŠ å…¥å°±ç»ªé˜Ÿåˆ—
 void join();
-//¼ÆËã½ø³Ì¶ÓÁĞµÄ³¤¶È
+//è®¡ç®—è¿›ç¨‹é˜Ÿåˆ—çš„é•¿åº¦
 int length();
-//½«½ø³Ì¼ÓÈë¶ÓÁĞ£¬²¢°´ÕÕÓÅÏÈ¼¶ÅÅĞò
+//å°†è¿›ç¨‹åŠ å…¥é˜Ÿåˆ—ï¼Œå¹¶æŒ‰ç…§ä¼˜å…ˆçº§æ’åº
 void input1();
 void input2();
-//»ñµÃ½ø³ÌµÄÏêÏ¸ĞÅÏ¢
+//è·å¾—è¿›ç¨‹çš„è¯¦ç»†ä¿¡æ¯
 void get_info(PCB *p);
-//½øĞĞ½ø³Ìµ÷¶È,²ÉÓÃ·ÇÇÀÕ¼µÄ¾²Ì¬ÓÅÏÈ¼¶µ÷¶ÈËã·¨
+//è¿›è¡Œè¿›ç¨‹è°ƒåº¦,é‡‡ç”¨éæŠ¢å çš„é™æ€ä¼˜å…ˆçº§è°ƒåº¦ç®—æ³•
 void execute1();
-//²ÉÓÃÂÖ×ªµ÷¶ÈËã·¨
+//é‡‡ç”¨è½®è½¬è°ƒåº¦ç®—æ³•
 void execute2();
-//ÏÔÊ¾½ø³ÌµÄÏêÏ¸ĞÅÏ¢
+//æ˜¾ç¤ºè¿›ç¨‹çš„è¯¦ç»†ä¿¡æ¯
 void *display(void *arg);
-//½ø³ÌÖ´ĞĞ½áÊø£¬Ïú»Ù½ø³Ì
+//è¿›ç¨‹æ‰§è¡Œç»“æŸï¼Œé”€æ¯è¿›ç¨‹
 void destory(PCB *p);
 /*****************************************************************************/
 
@@ -64,25 +64,25 @@ int main()
     switch (a)
     {
     case 1:
-        //ÊäÈë½ø³ÌµÄÏêÏ¸ĞÅÏ¢
+        //è¾“å…¥è¿›ç¨‹çš„è¯¦ç»†ä¿¡æ¯
         input1();
-        //ÇåÆÁ²Ù×÷
+        //æ¸…å±æ“ä½œ
         system("CLS");
-        //´´½¨ÁíÒ»¸ö½ø³ÌÓÃÓÚ¼àÊÓ½ø³Ìµ÷¶ÈµÄÏêÏ¸ĞÅÏ¢
+        //åˆ›å»ºå¦ä¸€ä¸ªè¿›ç¨‹ç”¨äºç›‘è§†è¿›ç¨‹è°ƒåº¦çš„è¯¦ç»†ä¿¡æ¯
         pthread_create(&disp_thread, NULL, display, (void *)message);
         execute1();
-        //È·±£Ïß³Ìdisp_threadÔÚÖ÷½ø³Ì½áÊøÇ°½áÊø
+        //ç¡®ä¿çº¿ç¨‹disp_threadåœ¨ä¸»è¿›ç¨‹ç»“æŸå‰ç»“æŸ
         pthread_join(disp_thread, &dis_result);
         break;
     case 2:
-        //ÊäÈë½ø³ÌµÄÏêÏ¸ĞÅÏ¢
+        //è¾“å…¥è¿›ç¨‹çš„è¯¦ç»†ä¿¡æ¯
         input2();
-        //ÇåÆÁ²Ù×÷
+        //æ¸…å±æ“ä½œ
         system("CLS");
-        //´´½¨ÁíÒ»¸ö½ø³ÌÓÃÓÚ¼àÊÓ½ø³Ìµ÷¶ÈµÄÏêÏ¸ĞÅÏ¢
+        //åˆ›å»ºå¦ä¸€ä¸ªè¿›ç¨‹ç”¨äºç›‘è§†è¿›ç¨‹è°ƒåº¦çš„è¯¦ç»†ä¿¡æ¯
         pthread_create(&disp_thread, NULL, display, (void *)message);
         execute2();
-        //È·±£Ïß³Ìdisp_threadÔÚÖ÷½ø³Ì½áÊøÇ°½áÊø
+        //ç¡®ä¿çº¿ç¨‹disp_threadåœ¨ä¸»è¿›ç¨‹ç»“æŸå‰ç»“æŸ
         pthread_join(disp_thread, &dis_result);
         break;
     default:
@@ -93,7 +93,7 @@ int main()
     return 0;
 }
 
-//¸ù¾İÓÅÏÈ¼¶¶Ô½ø³Ì½øĞĞÅÅĞò
+//æ ¹æ®ä¼˜å…ˆçº§å¯¹è¿›ç¨‹è¿›è¡Œæ’åº
 void sort()
 {
     PCB *cur, *pre;
@@ -119,8 +119,8 @@ void sort()
             }
             else
             {
-                //ÈôÓÅÏÈ¼¶×îµÍ£¬Ôò²åÈëµ½¶ÓÎ²
-                //²éÕÒ¶ÓÎ²
+                //è‹¥ä¼˜å…ˆçº§æœ€ä½ï¼Œåˆ™æ’å…¥åˆ°é˜Ÿå°¾
+                //æŸ¥æ‰¾é˜Ÿå°¾
                 cur = cur->link;
                 pre = pre->link;
             }
@@ -214,7 +214,7 @@ void *display(void *arg)
             p = p->link;
         }
         Sleep(1000);
-        //ÇåÆÁ²Ù×÷
+        //æ¸…å±æ“ä½œ
         system("CLS");
     }
     pthread_exit(0);
@@ -292,7 +292,7 @@ void execute1()
         PCB *p = ready;
         while (1)
         {
-            //½ø³ÌËùĞèÊ±¼ä¶ÔÊ±¼äÆ¬È¡Óà
+            //è¿›ç¨‹æ‰€éœ€æ—¶é—´å¯¹æ—¶é—´ç‰‡å–ä½™
             remainder = p->reqtime % TIME_SLICE;
             if ((p->reqtime - p->runtime) == remainder)
             {
@@ -319,10 +319,11 @@ void execute2()
     while (ready != NULL)
     {
         p = ready;
+         remainder = p->reqtime % TIME_SLICE;  
         while (p != NULL)
         {
-            //½ø³ÌËùĞèÊ±¼ä¶ÔÊ±¼äÆ¬È¡Óà
-            remainder = p->reqtime % TIME_SLICE;
+            //è¿›ç¨‹æ‰€éœ€æ—¶é—´å¯¹æ—¶é—´ç‰‡å–ä½™
+           
             if ((p->reqtime - p->runtime) == remainder)
             {
                 p->runtime += remainder;
